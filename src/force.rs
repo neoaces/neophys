@@ -3,7 +3,7 @@
 //!
 //! # Examples
 //! ```
-//! use rbt::force::gravity::Gravity;
+//! use neophys::force::gravity::Gravity;
 //! // Instantiate a new force Gravity
 //! let f = Gravity::new(0.0, 0.0);
 //! ```
