@@ -5,7 +5,7 @@
 //! ```
 //! use rbt::force::gravity::Gravity;
 //! // Instantiate a new force Gravity
-//! let f = Gravity::new();
+//! let f = Gravity::new(0.0, 0.0);
 //! ```
 
 pub mod basic;
@@ -16,5 +16,6 @@ use self::{basic::Basic, gravity::Gravity};
 
 pub trait Force {
     /// Returns the resulting acceleration
+    ///
     fn calc(&self) -> f32;
 }

@@ -11,6 +11,10 @@ impl Gravity {
             k: calculate_grav(m, d),
         }
     }
+
+    pub fn new_k(k: f32) -> Self {
+        Self { k }
+    }
 }
 
 impl Default for Gravity {
