@@ -26,14 +26,18 @@ pub struct Body {
 }
 
 impl Body {
-    pub fn new(gravity: bool, body_type: BodyType, m: f32) -> Self {
+    pub fn new(body_type: BodyType, m: f32) -> Self {
         Self {
+            forces: match &body_type {
+                BodyType::GPoint => vec![Box::<Gravity>::default()],
+                _ => vec![],
+            },
+
             body_type,
             m,
             s: Vec2::empty(),
             v: 0.0,
             v_dir: Vec2::empty(),
-            forces: vec![Box::<Gravity>::default()],
         }
     }
 }
