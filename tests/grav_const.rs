@@ -1,8 +1,4 @@
-use rbt::{
-    body::Body,
-    engine::Engine,
-    force::{gravity::Gravity, Force},
-};
+use rbt::force::{gravity::Gravity, Force};
 
 #[test]
 fn grav_const() {

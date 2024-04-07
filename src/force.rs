@@ -12,10 +12,7 @@ pub mod basic;
 pub mod gravity;
 use crate::constants::*;
 
-use self::{basic::Basic, gravity::Gravity};
-
 pub trait Force {
     /// Returns the resulting acceleration
-    ///
     fn calc(&self) -> f32;
 }

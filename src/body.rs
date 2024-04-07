@@ -1,8 +1,5 @@
 use crate::{
-    force::{
-        gravity::{self, Gravity},
-        Force,
-    },
+    force::{gravity::Gravity, Force},
     vector::vec2::Vec2,
 };
 
