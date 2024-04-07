@@ -5,6 +5,13 @@ pub struct Vec2 {
 }
 
 impl Vec2 {
+    pub fn empty() -> Vec2 {
+        Vec2 {
+            i: 0.0,
+            j: 0.0,
+        }
+    }
+
     pub fn x(&self) -> f32 {
         self.i
     }
