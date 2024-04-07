@@ -1,7 +1,7 @@
 use super::Force;
 
 pub struct Basic {
-    m: f32
+    m: f32,
 }
 
 impl Force for Basic {

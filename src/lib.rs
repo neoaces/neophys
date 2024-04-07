@@ -1,10 +1,10 @@
 // pub mod first;
 pub mod body;
+pub mod constants;
 pub mod engine;
 pub mod force;
 pub mod utils;
 pub mod vector;
-pub mod constants;
 // use crate::{
 //     utils::type_print,
 //     vector::{vec2::Vec2, Vector},
