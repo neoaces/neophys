@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "rbt"
+name = "neophys"
 version = "0.1.0"
