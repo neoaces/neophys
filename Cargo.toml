@@ -4,7 +4,7 @@ description = "an ap physics study attempt"
 license = "Unlicense"
 version = "0.1.0"
 edition = "2021"
-authors = ["anzlemchavez <anzlemchavez@gmail.com>"]
+authors = ["Anzle Chavez <anzlemchavez@gmail.com>"]
 
 [lib]
 name = "neophys"
