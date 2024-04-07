@@ -1,4 +1,4 @@
-use super::{k_G, k_mE, k_rE, Force};
+use super::{Force, K_G, K_ME, K_RE};
 pub struct Gravity {
     // Gravitational constant without the objects mass
     k: f32,
@@ -15,7 +15,7 @@ impl Gravity {
 
 impl Default for Gravity {
     fn default() -> Self {
-        Self::new(k_mE, k_rE)
+        Self::new(K_ME, K_RE)
     }
 }
 
@@ -26,5 +26,5 @@ impl Force for Gravity {
 }
 
 pub fn calculate_grav(m: f32, d: f32) -> f32 {
-    (k_G * m) / f32::powi(d, 2)
+    (K_G * m) / f32::powi(d, 2)
 }
