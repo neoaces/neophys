@@ -21,7 +21,7 @@ impl Default for Gravity {
 
 impl Force for Gravity {
     fn calc(&self) -> f32 {
-        todo!() // Implement calculation for gravitational force
+        self.k
     }
 }
 
