@@ -1,3 +1,5 @@
+use super::Vector;
+
 #[derive(Debug)]
 pub struct Vec2 {
     i: f32,
@@ -5,13 +7,6 @@ pub struct Vec2 {
 }
 
 impl Vec2 {
-    pub fn empty() -> Vec2 {
-        Vec2 {
-            i: 0.0,
-            j: 0.0,
-        }
-    }
-
     pub fn x(&self) -> f32 {
         self.i
     }
@@ -37,5 +32,11 @@ impl super::Vector for Vec2 {
     fn scale(&mut self, f: f32) {
         self.scale_x(f);
         self.scale_y(f);
+    }
+}
+
+impl Default for Vec2 {
+    fn default() -> Self {
+        self::Vec2::new(0.0, 0.0)
     }
 }

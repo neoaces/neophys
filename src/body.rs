@@ -35,9 +35,9 @@ impl Body {
 
             body_type,
             m,
-            s: Vec2::empty(),
+            s: Vec2::default(),
             v: 0.0,
-            v_dir: Vec2::empty(),
+            v_dir: Vec2::default(),
         }
     }
 }
