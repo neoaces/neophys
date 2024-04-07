@@ -1,7 +1,7 @@
 use crate::body::Body;
 
 pub struct Engine {
-    bodies: Vec<Box<Body>>,
+    bodies: Vec<Body>,
 }
 
 impl Engine {
