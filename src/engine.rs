@@ -16,6 +16,10 @@ impl Engine {
     pub fn new(bodies: Vec<Body>) -> Self {
         Self { bodies }
     }
+
+    pub fn bodies(&self) -> Vec<Body> {
+        self.bodies.clone()
+    }
 }
 
 impl Default for Engine {

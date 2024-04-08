@@ -4,7 +4,6 @@ pub mod constants;
 pub mod engine;
 pub mod force;
 pub mod utils;
-pub mod vector;
 // use crate::{
 //     utils::type_print,
 //     vector::{vec2::Vec2, Vector},
