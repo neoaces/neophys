@@ -74,7 +74,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.m, 0.1..=100.0).text("Mass"));
         ui.label(format!(
             "Mass (kg): {}",
-            model.engine.bodies().get(0).unwrap().borrow().mass()
+            model.engine.bodies().first().unwrap().borrow().mass()
         ));
         ui.label(format!(
             "Gravity force on the object: {}",
