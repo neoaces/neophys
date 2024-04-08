@@ -1,4 +1,5 @@
 use crate::body::Body;
+use std::cell::RefCell;
 use std::fmt::Debug;
 use std::{rc::Rc, time::Duration};
 
@@ -6,45 +7,50 @@ use std::{rc::Rc, time::Duration};
 pub struct NoBodyError;
 
 pub struct Engine {
-    bodies: Vec<Box<Body>>,
+    bodies: Vec<RefCell<Body>>,
 }
 
 impl Engine {
     pub fn count_bodies(&self) -> Option<usize> {
-        if self.bodies.len() != 0 {
+        if !self.bodies.is_empty() {
             Some(self.bodies.len())
         } else {
             None
         }
     }
 
-    pub fn add_body(&mut self, body: Box<Body>) {
+    pub fn add_body(&mut self, body: RefCell<Body>) {
         self.bodies.push(body)
     }
 
-    pub fn new(bodies: Vec<Box<Body>>) -> Self {
+    pub fn new(bodies: Vec<RefCell<Body>>) -> Self {
         Self { bodies }
     }
 
-    pub fn peek_bodies(&self) -> &Vec<Box<Body>> {
+    pub fn peek_bodies(&self) -> &Vec<RefCell<Body>> {
         &self.bodies
     }
 
-    pub fn bodies(&self) -> &Vec<Box<Body>> {
+    pub fn bodies(&self) -> &Vec<RefCell<Body>> {
         &self.bodies
     }
 
-    pub fn calc(&self, del: f32) {
+    #[allow(clippy::borrowed_box)]
+    pub fn body(&self, i: usize) -> Option<&RefCell<Body>> {
+        self.bodies().get(i)
+    }
+
+    pub fn calc(&mut self, del: f32) {
         if let Some(a) = self.count_bodies() {
             for body in self.bodies.iter() {
-                body.calc()
+                body.borrow_mut().calc(del);
             }
         }
     }
 
     pub fn update_mass(&mut self, m: f32, i: usize) -> Result<(), NoBodyError> {
         if let Some(a) = self.bodies.get_mut(i) {
-            a.m = m;
+            a.borrow_mut().m = m;
             Ok(())
         } else {
             Err(NoBodyError)
@@ -54,7 +60,7 @@ impl Engine {
 
 impl Default for Engine {
     fn default() -> Self {
-        Self::new(Vec::<Box<Body>>::new())
+        Self::new(Vec::<RefCell<Body>>::new())
     }
 }
 
