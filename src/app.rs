@@ -46,6 +46,7 @@ fn model(app: &App) -> Model {
 
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
+    neophys::utils::setup_custom_fonts(egui.ctx());
 
     Model {
         egui,
