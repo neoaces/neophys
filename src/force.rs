@@ -12,7 +12,22 @@ pub mod basic;
 pub mod gravity;
 use crate::constants::*;
 
+use self::{basic::Basic, gravity::Gravity};
+
+#[derive(Clone)]
+pub enum ForceType {
+    Gravity(Gravity),
+    Basic(Basic),
+}
+
 pub trait Force {
     /// Returns the resulting acceleration
     fn calc(&self) -> f32;
+    fn clone_dyn(&self) -> Box<dyn Force>;
+}
+
+impl Clone for Box<dyn Force> {
+    fn clone(&self) -> Self {
+        self.clone_dyn()
+    }
 }

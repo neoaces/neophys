@@ -1,4 +1,6 @@
 use super::{Force, K_G, K_ME, K_RE};
+
+#[derive(Clone)]
 pub struct Gravity {
     // Gravitational constant without the objects mass
     k: f32,
@@ -26,6 +28,10 @@ impl Default for Gravity {
 impl Force for Gravity {
     fn calc(&self) -> f32 {
         self.k
+    }
+
+    fn clone_dyn(&self) -> Box<dyn Force> {
+        Box::new(self.clone())
     }
 }
 
