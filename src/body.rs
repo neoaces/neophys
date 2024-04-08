@@ -1,13 +1,15 @@
-use crate::{
-    force::{gravity::Gravity, Force},
-    vector::vec2::Vec2,
-};
+use std::rc::Rc;
 
+use crate::force::{gravity::Gravity, Force};
+use nannou::geom::Vec2;
+
+#[derive(Clone)]
 pub enum BodyType {
     GPoint,
     Point,
 }
 
+#[derive(Clone)]
 pub struct Body {
     /// Type of the body, one of Point, GPoint
     body_type: BodyType,
@@ -19,14 +21,14 @@ pub struct Body {
     v: f32,
     v_dir: Vec2,
     /// Array of all forces on the object
-    forces: Vec<Box<dyn Force>>,
+    forces: Vec<Rc<dyn Force>>,
 }
 
 impl Body {
     pub fn new(body_type: BodyType, m: f32) -> Self {
         Self {
             forces: match &body_type {
-                BodyType::GPoint => vec![Box::<Gravity>::default()],
+                BodyType::GPoint => vec![Rc::<Gravity>::default()],
                 _ => vec![],
             },
 
