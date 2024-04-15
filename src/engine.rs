@@ -1,4 +1,5 @@
 use crate::body::Body;
+use core::time;
 use std::cell::RefCell;
 use std::fmt::Debug;
 use std::{rc::Rc, time::Duration};
@@ -8,6 +9,8 @@ pub struct NoBodyError;
 
 pub struct Engine {
     bodies: Vec<RefCell<Body>>,
+    time: time::Duration,
+    pub iterations: u32,
 }
 
 impl Engine {
@@ -19,12 +22,16 @@ impl Engine {
         }
     }
 
-    pub fn add_body(&mut self, body: RefCell<Body>) {
-        self.bodies.push(body)
+    pub fn add_body(&mut self, body: Body) {
+        self.bodies.push(RefCell::new(body));
     }
 
-    pub fn new(bodies: Vec<RefCell<Body>>) -> Self {
-        Self { bodies }
+    pub fn new(bodies: Vec<RefCell<Body>>, time: time::Duration) -> Self {
+        Self {
+            bodies,
+            time,
+            iterations: 0,
+        }
     }
 
     pub fn peek_bodies(&self) -> &Vec<RefCell<Body>> {
@@ -40,10 +47,10 @@ impl Engine {
         self.bodies().get(i)
     }
 
-    pub fn calc(&mut self, del: f32) {
-        if let Some(a) = self.count_bodies() {
+    pub fn calc(&self, del: f32, timestep: f32) {
+        if let Some(_a) = self.count_bodies() {
             for body in self.bodies.iter() {
-                body.borrow_mut().calc(del);
+                body.borrow_mut().calc(del, timestep);
             }
         }
     }
@@ -60,7 +67,7 @@ impl Engine {
 
 impl Default for Engine {
     fn default() -> Self {
-        Self::new(Vec::<RefCell<Body>>::new())
+        Self::new(Vec::<RefCell<Body>>::new(), time::Duration::from_secs(0))
     }
 }
 

@@ -1,4 +1,4 @@
-use nannou::{draw::mesh::vertex::Color, prelude::*};
+use nannou::{draw::mesh::vertex::Color, geom::bounding_rect, prelude::*};
 use nannou_egui::{
     self,
     egui::{self, Color32, Visuals},
@@ -13,6 +13,7 @@ use neophys::{
 };
 use std::{borrow::Borrow, cell::RefCell, ops::Add, vec};
 
+static GROUND: f32 = 20.0;
 static TITLE: &str = "Root Viewport";
 static V1_TITLE: &str = "Viewport 1";
 
@@ -25,13 +26,14 @@ struct Settings {
     scale: f32,
     color: Srgb<u8>,
     time: f32,
+    bounding_box: bool,
 }
 
 struct Model {
     engine: Engine,
     settings: Settings,
     egui: Egui,
-    x: f32,
+    pos: Vec2,
     t: f32,
     m: f32,
 }
@@ -55,8 +57,9 @@ fn model(app: &App) -> Model {
             scale: 25.0,
             color: WHITE,
             time: 100.0,
+            bounding_box: true,
         },
-        x: 0.0,
+        pos: Vec2::default(),
         t: 0.0,
         m: 10.0,
         engine: Engine::new(vec![RefCell::new(Body::new(BodyType::GPoint, 10.0))]),
@@ -73,6 +76,8 @@ fn update(_app: &App, model: &mut Model, update: Update) {
     egui::Window::new("Settings").show(frame, |ui| {
         ui.label("Mass of body");
         ui.add(egui::Slider::new(&mut model.m, 0.1..=100.0).text("Mass"));
+        ui.add(egui::Slider::new(&mut model.settings.scale, 5.0..=100.0).text("Radius"));
+        ui.checkbox(&mut model.settings.bounding_box, "Enable bounding boxes");
         ui.label(format!(
             "Mass (kg): {}",
             model.engine.bodies().first().unwrap().borrow().mass()
@@ -106,14 +111,18 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.ellipse()
         .resolution(settings.resolution as f32)
-        .xy(vec2(model.x, 0.0))
+        .xy(model.pos)
         .color(settings.color)
         .radius(settings.scale);
 
-    draw.line()
-        .weight(1.0)
-        .color(WHITE)
-        .points(win.mid_left(), win.mid_right());
+    if model.settings.bounding_box {
+        neophys::debug::body::draw_bounding_circle(&draw, model.settings.scale, model.pos);
+    }
+
+    draw.line().weight(1.0).color(WHITE).points(
+        win.pad_bottom(GROUND).bottom_left(),
+        win.pad_bottom(GROUND).bottom_right(),
+    );
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();

@@ -1,3 +1,5 @@
+use log::info;
+
 use super::{Force, K_G, K_ME, K_RE};
 
 #[derive(Clone)]
@@ -21,7 +23,7 @@ impl Gravity {
 
 impl Default for Gravity {
     fn default() -> Self {
-        Self::new(K_ME, K_RE)
+        Self::new(10.0, K_RE)
     }
 }
 
@@ -36,5 +38,5 @@ impl Force for Gravity {
 }
 
 pub fn calculate_grav(m: f32, d: f32) -> f32 {
-    (K_G * m) / f32::powi(d, 2)
+    (K_G * K_ME) / f32::powi(d, 2)
 }
