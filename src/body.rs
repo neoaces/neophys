@@ -62,12 +62,12 @@ impl Body {
 
     /// Represents the F(t) where F is the forces acting on the given body.
     // TODO: replace the options
-    pub fn sum_forces(&self, a: Option<f32>, b: Option<f32>) -> f32 {
+    pub fn sum_forces(&self, x: Option<f32>, dxdt: Option<f32>) -> f32 {
         if !self.forces.is_empty() {
             let mut sum: f32 = 0.0;
 
             for force in self.forces.iter() {
-                sum += force.calc();
+                sum += force.calc(x, dxdt);
             }
 
             sum

@@ -22,7 +22,7 @@ pub enum ForceType {
 
 pub trait Force {
     /// Returns the resulting acceleration
-    fn calc(&self) -> f32;
+    fn calc(&self, x: f32, dxdt: f32) -> f32;
     fn clone_dyn(&self) -> Box<dyn Force>;
 }
 

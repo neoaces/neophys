@@ -28,7 +28,7 @@ impl Default for Gravity {
 }
 
 impl Force for Gravity {
-    fn calc(&self) -> f32 {
+    fn calc(&self, _x: f32, _dxdt: f32) -> f32 {
         self.k
     }
 
