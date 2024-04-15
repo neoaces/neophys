@@ -9,7 +9,6 @@ pub struct NoBodyError;
 
 pub struct Engine {
     bodies: Vec<RefCell<Body>>,
-    time: time::Duration,
     pub iterations: u32,
 }
 
@@ -26,10 +25,9 @@ impl Engine {
         self.bodies.push(RefCell::new(body));
     }
 
-    pub fn new(bodies: Vec<RefCell<Body>>, time: time::Duration) -> Self {
+    pub fn new(bodies: Vec<RefCell<Body>>) -> Self {
         Self {
             bodies,
-            time,
             iterations: 0,
         }
     }
@@ -67,7 +65,7 @@ impl Engine {
 
 impl Default for Engine {
     fn default() -> Self {
-        Self::new(Vec::<RefCell<Body>>::new(), time::Duration::from_secs(0))
+        Self::new(Vec::<RefCell<Body>>::new())
     }
 }
 

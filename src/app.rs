@@ -1,3 +1,4 @@
+use log::{debug, info};
 use nannou::{draw::mesh::vertex::Color, geom::bounding_rect, prelude::*};
 use nannou_egui::{
     self,
@@ -14,8 +15,7 @@ use neophys::{
 use std::{borrow::Borrow, cell::RefCell, ops::Add, vec};
 
 static GROUND: f32 = 20.0;
-static TITLE: &str = "Root Viewport";
-static V1_TITLE: &str = "Viewport 1";
+static TIMESTEP: f32 = 0.1;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -34,11 +34,14 @@ struct Model {
     settings: Settings,
     egui: Egui,
     pos: Vec2,
+    ground_y: f32,
     t: f32,
     m: f32,
 }
 
 fn model(app: &App) -> Model {
+    env_logger::init();
+
     let window_id = app
         .new_window()
         .view(view)
@@ -49,6 +52,8 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
     neophys::utils::setup_custom_fonts(egui.ctx());
+
+    info!("Bottom y-coor: {}", window.rect().bottom());
 
     Model {
         egui,
@@ -63,6 +68,7 @@ fn model(app: &App) -> Model {
         t: 0.0,
         m: 10.0,
         engine: Engine::new(vec![RefCell::new(Body::new(BodyType::GPoint, 10.0))]),
+        ground_y: window.rect().bottom() + GROUND,
     }
 }
 
@@ -80,7 +86,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.checkbox(&mut model.settings.bounding_box, "Enable bounding boxes");
         ui.label(format!(
             "Mass (kg): {}",
-            model.engine.bodies().first().unwrap().borrow().mass()
+            model.engine.bodies().first().unwrap().borrow().m
         ));
         ui.label(format!(
             "Gravity force on the object: {}",
@@ -94,7 +100,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     model.t = _app.elapsed_frames() as f32 / model.settings.time;
 
-    model.engine.calc(model.t)
+    model.engine.calc(model.t, TIMESTEP);
 }
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
@@ -103,20 +109,26 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-    let mut engine = &model.engine;
+    let engine = &model.engine;
     let win = app.window_rect();
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
-    println!("{:?}", engine);
+    debug!("{:?}", engine);
+
+    let pos = model.engine.peek_bodies().first().unwrap().borrow().s;
+    let x = pos.x;
+    let y = pos.y.clamp(model.ground_y + model.settings.scale, 0.0);
+    let new_pos = Vec2::new(x, y);
 
     draw.ellipse()
         .resolution(settings.resolution as f32)
-        .xy(model.pos)
+        // TODO: Change this when
+        .xy(new_pos)
         .color(settings.color)
         .radius(settings.scale);
 
     if model.settings.bounding_box {
-        neophys::debug::body::draw_bounding_circle(&draw, model.settings.scale, model.pos);
+        neophys::debug::body::draw_bounding_circle(&draw, model.settings.scale, new_pos);
     }
 
     draw.line().weight(1.0).color(WHITE).points(
