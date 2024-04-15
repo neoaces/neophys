@@ -10,9 +10,9 @@ pub struct Gravity {
 
 impl Gravity {
     /// Create a gravity force with the mass of the surface and the distance from the center.
-    pub fn new(m: f32, d: f32) -> Self {
+    pub fn new(d: f32) -> Self {
         Self {
-            k: calculate_grav(m, d),
+            k: calculate_grav(d),
         }
     }
 
@@ -23,7 +23,7 @@ impl Gravity {
 
 impl Default for Gravity {
     fn default() -> Self {
-        Self::new(10.0, K_RE)
+        Self::new(K_RE)
     }
 }
 
@@ -37,6 +37,6 @@ impl Force for Gravity {
     }
 }
 
-pub fn calculate_grav(m: f32, d: f32) -> f32 {
+pub fn calculate_grav(d: f32) -> f32 {
     (K_G * K_ME) / f32::powi(d, 2)
 }
