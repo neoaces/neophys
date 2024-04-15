@@ -1,6 +1,5 @@
 use log::{debug, info};
 use neophys::{body::Body, engine::Engine};
-use plotters::prelude::*;
 
 fn main() {
     env_logger::init();
