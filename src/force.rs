@@ -10,6 +10,8 @@
 
 pub mod basic;
 pub mod gravity;
+use nannou::glam::Vec2;
+
 use crate::constants::*;
 
 use self::{basic::Basic, gravity::Gravity};
@@ -22,7 +24,7 @@ pub enum ForceType {
 
 pub trait Force {
     /// Returns the resulting acceleration
-    fn calc(&self, x: f32, dxdt: f32) -> f32;
+    fn calc(&self, x: Vec2, dxdt: Vec2) -> f32;
     fn clone_dyn(&self) -> Box<dyn Force>;
 }
 

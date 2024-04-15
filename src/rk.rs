@@ -16,9 +16,9 @@ pub fn solve_rk4_and_set(body: &mut Body, init_state: &State, t: f32, timestep: 
     let y = init_state.s.y;
     let dxdt = init_state.v.x;
     let dydt = init_state.v.y;
-    let a = body.sum_forces(None, None);
+    let a = body.sum_forces();
 
-    debug!("Acceleration: {}", body.sum_forces(Some(0.0), Some(0.0)));
+    debug!("Acceleration: {}", body.sum_forces());
 
     body.v.y += solve_rk4(x, None, timestep, &|_: f32, _: f32| a);
 

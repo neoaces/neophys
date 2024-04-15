@@ -1,3 +1,5 @@
+use nannou::glam::Vec2;
+
 use super::Force;
 
 #[derive(Clone)]
@@ -6,7 +8,7 @@ pub struct Basic {
 }
 
 impl Force for Basic {
-    fn calc(&self) -> f32 {
+    fn calc(&self, _x: Vec2, _dxdt: Vec2) -> f32 {
         self.m
     }
 

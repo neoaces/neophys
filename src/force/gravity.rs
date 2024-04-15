@@ -1,4 +1,5 @@
 use log::info;
+use nannou::glam::Vec2;
 
 use super::{Force, K_G, K_ME, K_RE};
 
@@ -28,7 +29,7 @@ impl Default for Gravity {
 }
 
 impl Force for Gravity {
-    fn calc(&self, _x: f32, _dxdt: f32) -> f32 {
+    fn calc(&self, _x: Vec2, _dxdt: Vec2) -> f32 {
         self.k
     }
 
@@ -38,5 +39,5 @@ impl Force for Gravity {
 }
 
 pub fn calculate_grav(d: f32) -> f32 {
-    (K_G * K_ME) / f32::powi(d, 2)
+    (-K_G * K_ME) / f32::powi(d, 2)
 }
