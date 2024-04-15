@@ -16,6 +16,7 @@ use std::{borrow::Borrow, cell::RefCell, ops::Add, vec};
 
 static GROUND: f32 = 20.0;
 static TIMESTEP: f32 = 0.1;
+static CIRCLE_RES: u32 = 8;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -58,9 +59,9 @@ fn model(app: &App) -> Model {
     Model {
         egui,
         settings: Settings {
-            resolution: 10,
+            resolution: CIRCLE_RES,
             scale: 25.0,
-            color: WHITE,
+            color: RED,
             time: 100.0,
             bounding_box: true,
         },
