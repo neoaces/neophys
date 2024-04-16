@@ -6,5 +6,6 @@ pub mod debug;
 pub mod engine;
 pub mod errors;
 pub mod force;
+pub mod prelude;
 pub mod rk;
 pub mod utils;

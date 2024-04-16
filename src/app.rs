@@ -1,16 +1,10 @@
-use log::{debug, info};
+use log::{debug, error, info};
 use nannou::prelude::*;
 use nannou_egui::{
     egui::{self},
     Egui,
 };
-use neophys::{
-    body::{
-        Body,
-        BodyType::{self},
-    },
-    engine::Engine,
-};
+use neophys::prelude::*;
 use std::cell::RefCell;
 
 static GROUND: f32 = 20.0;
@@ -100,7 +94,11 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     model.t = _app.elapsed_frames() as f32 / model.settings.time;
 
-    model.engine.calc(model.t, TIMESTEP);
+    if let Err(a) = model.engine.calc(model.t, TIMESTEP) {
+        error!(
+            "No bodies found in the engine. Please add a body using the engine::add_body function."
+        )
+    };
 }
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
@@ -114,27 +112,23 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
     debug!("{:?}", engine);
+    for body in model.engine.peek_bodies().iter() {
+        let pos = body.borrow().s;
+        let x = pos.x;
+        let y = pos.y.clamp(model.ground_y + model.settings.scale, 0.0);
+        let new_pos = Vec2::new(x, y);
 
-    let pos = model.engine.peek_bodies().first().unwrap().borrow().s;
-    let x = pos.x;
-    let y = pos.y.clamp(model.ground_y + model.settings.scale, 0.0);
-    let new_pos = Vec2::new(x, y);
+        draw.ellipse()
+            .resolution(settings.resolution as f32)
+            // TODO: Change this when
+            .xy(new_pos)
+            .color(settings.color)
+            .radius(settings.scale);
 
-    draw.ellipse()
-        .resolution(settings.resolution as f32)
-        // TODO: Change this when
-        .xy(new_pos)
-        .color(settings.color)
-        .radius(settings.scale);
-
-    if model.settings.bounding_box {
-        neophys::debug::body::draw_bounding_circle(&draw, model.settings.scale, new_pos);
+        if model.settings.bounding_box {
+            neophys::debug::body::draw_bounding_circle(&draw, model.settings.scale, new_pos);
+        }
     }
-
-    draw.line().weight(1.0).color(WHITE).points(
-        win.pad_bottom(GROUND).bottom_left(),
-        win.pad_bottom(GROUND).bottom_right(),
-    );
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
