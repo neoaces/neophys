@@ -30,10 +30,6 @@ impl Engine {
         }
     }
 
-    pub fn peek_bodies(&self) -> &Vec<RefCell<Body>> {
-        &self.bodies
-    }
-
     pub fn bodies(&self) -> &Vec<RefCell<Body>> {
         &self.bodies
     }
@@ -44,6 +40,7 @@ impl Engine {
 
     pub fn calc(&self, del: f32, timestep: f32) -> Result<(), NoBodyError> {
         // TODO: Implement the collision loops inside this function, not inside the body.
+        // Calculate state
         if let Some(_a) = self.count_bodies() {
             for body in self.bodies.iter() {
                 body.borrow_mut().calc(del, timestep);
