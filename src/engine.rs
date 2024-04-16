@@ -43,6 +43,7 @@ impl Engine {
     }
 
     pub fn calc(&self, del: f32, timestep: f32) -> Result<(), NoBodyError> {
+        // TODO: Implement the collision loops inside this function, not inside the body.
         if let Some(_a) = self.count_bodies() {
             for body in self.bodies.iter() {
                 body.borrow_mut().calc(del, timestep);
