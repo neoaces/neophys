@@ -1,5 +1,6 @@
 use crate::body::{Body, State};
-use log::{debug, info};
+use log::debug;
+
 /// Implementation of the fourth order Runge Kutta method to update the position and velocity of a Body
 /// * `body` - The body to be updated
 /// * `init_state` - The initial state of the Body

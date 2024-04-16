@@ -1,4 +1,3 @@
-use log::info;
 use nannou::glam::Vec2;
 
 use super::{Force, K_G, K_ME, K_RE};

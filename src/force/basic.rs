@@ -1,5 +1,4 @@
 use nannou::glam::Vec2;
-
 use super::Force;
 
 #[derive(Clone)]

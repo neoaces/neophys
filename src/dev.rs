@@ -1,4 +1,5 @@
-use log::{debug, info};
+use log::info;
+
 use neophys::{body::Body, engine::Engine};
 
 fn main() {

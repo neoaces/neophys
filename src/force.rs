@@ -8,13 +8,12 @@
 //! let f = Gravity::new(0.0, 0.0);
 //! ```
 
-pub mod basic;
-pub mod gravity;
+use self::{basic::Basic, gravity::Gravity};
+use crate::constants::*;
 use nannou::glam::Vec2;
 
-use crate::constants::*;
-
-use self::{basic::Basic, gravity::Gravity};
+pub mod basic;
+pub mod gravity;
 
 #[derive(Clone)]
 pub enum ForceType {

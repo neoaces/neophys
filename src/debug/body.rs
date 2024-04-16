@@ -1,4 +1,4 @@
-use nannou::{color::WHITE, geom::Rect, glam::Vec2, Draw};
+use nannou::{color::WHITE, Draw, glam::Vec2};
 
 #[derive(Debug, Clone)]
 pub struct BoundingError;

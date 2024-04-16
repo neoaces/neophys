@@ -1,18 +1,17 @@
 use log::{debug, info};
-use nannou::{draw::mesh::vertex::Color, geom::bounding_rect, prelude::*};
+use nannou::prelude::*;
 use nannou_egui::{
-    self,
-    egui::{self, Color32, Visuals},
+    egui::{self},
     Egui,
 };
 use neophys::{
     body::{
         Body,
-        BodyType::{self, *},
+        BodyType::{self},
     },
-    engine::{self, Engine},
+    engine::Engine,
 };
-use std::{borrow::Borrow, cell::RefCell, ops::Add, vec};
+use std::cell::RefCell;
 
 static GROUND: f32 = 20.0;
 static TIMESTEP: f32 = 0.1;

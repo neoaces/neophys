@@ -1,4 +1,4 @@
-use neophys::force::{gravity::Gravity, Force};
+use neophys::force::{Force, gravity::Gravity};
 
 #[test]
 fn grav_const() {

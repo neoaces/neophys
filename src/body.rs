@@ -1,9 +1,7 @@
-use crate::force::{gravity::Gravity, Force, ForceType};
+use crate::force::{gravity::Gravity, Force};
 use crate::rk::solve_rk4_and_set;
-use log::info;
 use nannou::geom::Vec2;
 use std::fmt::Debug;
-use std::{cell::RefCell, rc::Rc};
 
 /// Struct representing the system state
 /// * `s` - The position of the system as a vector
