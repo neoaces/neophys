@@ -42,11 +42,15 @@ impl Engine {
         self.bodies().get(i)
     }
 
-    pub fn calc(&self, del: f32, timestep: f32) {
+    pub fn calc(&self, del: f32, timestep: f32) -> Result<(), NoBodyError> {
         if let Some(_a) = self.count_bodies() {
             for body in self.bodies.iter() {
                 body.borrow_mut().calc(del, timestep);
             }
+
+            Ok(())
+        } else {
+            Err(NoBodyError)
         }
     }
 

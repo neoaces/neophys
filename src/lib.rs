@@ -4,6 +4,7 @@ pub mod collision;
 pub mod constants;
 pub mod debug;
 pub mod engine;
+pub mod errors;
 pub mod force;
 pub mod rk;
 pub mod utils;
