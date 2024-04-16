@@ -73,6 +73,7 @@ impl Default for Engine {
 impl Debug for Engine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Engine")
+            .field("Iterations", &self.iterations)
             .field("Bodies", &self.bodies)
             .finish()
     }
