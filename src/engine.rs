@@ -64,7 +64,7 @@ impl Engine {
 
 impl Default for Engine {
     fn default() -> Self {
-        Self::new(Vec::<RefCell<Body>>::new())
+        Engine::new(Vec::<RefCell<Body>>::new())
     }
 }
 
