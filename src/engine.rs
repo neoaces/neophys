@@ -38,7 +38,6 @@ impl Engine {
         &self.bodies
     }
 
-    #[allow(clippy::borrowed_box)]
     pub fn body(&self, i: usize) -> Option<&RefCell<Body>> {
         self.bodies().get(i)
     }
