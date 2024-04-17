@@ -73,22 +73,21 @@ fn update(_app: &App, model: &mut Model, update: Update) {
     egui.set_elapsed_time(update.since_start);
     let frame = &egui.begin_frame();
 
+    let bodies = model.engine.bodies().first().unwrap().borrow();
+
     egui::Window::new("Settings").show(frame, |ui| {
         ui.label("Mass of body");
         ui.add(egui::Slider::new(&mut model.m, 0.1..=100.0).text("Mass"));
         ui.add(egui::Slider::new(&mut model.settings.scale, 5.0..=100.0).text("Radius"));
         ui.checkbox(&mut model.settings.bounding_box, "Enable bounding boxes");
-        ui.label(format!(
-            "Mass (kg): {}",
-            model.engine.bodies().first().unwrap().borrow().m
-        ));
+        ui.label(format!("Mass (kg): {}", bodies.m));
         ui.label(format!(
             "Gravity force on the object: {}",
-            model.engine.body(0).unwrap().borrow_mut().sum_forces()
+            bodies.sum_forces()
         ))
     });
 
-    if model.engine.bodies().first().unwrap().borrow_mut().m != model.m {
+    if model.engine.bodies().first().unwrap().borrow().m != model.m {
         model.engine.update_mass(model.m, 0).ok();
     };
 
