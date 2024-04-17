@@ -59,7 +59,6 @@ impl Body {
     }
 
     /// Represents the F(t) where F is the forces acting on the given body.
-    // TODO: replace the options
     pub fn sum_forces(&self) -> f32 {
         if !self.forces.is_empty() {
             let mut sum: f32 = 0.0;
