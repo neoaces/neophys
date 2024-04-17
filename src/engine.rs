@@ -1,4 +1,4 @@
-use crate::body::Body;
+use crate::body::{Body, State};
 use std::cell::RefCell;
 use std::fmt::Debug;
 
@@ -40,21 +40,27 @@ impl Engine {
 
     pub fn calc(&self, del: f32, timestep: f32) -> Result<(), NoBodyError> {
         // TODO: Implement the collision loops inside this function, not inside the body.
-        // Calculate state
-        if let Some(_a) = self.count_bodies() {
-            for body in self.bodies.iter() {
-                body.borrow_mut().calc(del, timestep);
-            }
-
-            Ok(())
-        } else {
-            Err(NoBodyError)
+        if let None = self.count_bodies() {
+            return Err(NoBodyError);
         }
+        // Calculate state
+        let states: Vec<State> = Vec::new();
+        // if let Some(_a) = self.count_bodies() {
+        //     for body in self.bodies.iter() {
+        //         body.borrow_mut().calc(del, timestep);
+        //     }
+
+        //     Ok(())
+        // } else {
+        //     Err(NoBodyError)
+        // }
+        Ok(())
     }
 
-    pub fn update_mass(&mut self, m: f32, i: usize) -> Result<(), NoBodyError> {
-        if let Some(a) = self.bodies.get_mut(i) {
-            a.borrow_mut().m = m;
+    pub fn update_mass(&self, m: f32, i: usize) -> Result<(), NoBodyError> {
+        if !self.bodies.is_empty() {
+            let mut a = self.body(i).unwrap().borrow_mut();
+            a.m = m;
             Ok(())
         } else {
             Err(NoBodyError)
