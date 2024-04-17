@@ -88,7 +88,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ))
     });
 
-    if model.engine.peek_bodies().first().unwrap().borrow_mut().m != model.m {
+    if model.engine.bodies().first().unwrap().borrow_mut().m != model.m {
         model.engine.update_mass(model.m, 0).ok();
     };
 
@@ -112,7 +112,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
     debug!("{:?}", engine);
-    for body in model.engine.peek_bodies().iter() {
+    for body in model.engine.bodies().iter() {
         let pos = body.borrow().s;
         let x = pos.x;
         let y = pos.y.clamp(model.ground_y + model.settings.scale, 0.0);
