@@ -1,12 +1,15 @@
+pub mod bounding;
+use crate::constants::K_RE;
 use crate::force::{gravity::Gravity, Force};
-use crate::rk::solve_rk4_and_set;
+use crate::rk::solve_rk4;
+use log::info;
 use nannou::geom::Vec2;
 use std::fmt::Debug;
 
 /// Struct representing the system state
 /// * `s` - The position of the system as a vector
 /// * `v` - The velocity of the system as a vector
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct State {
     pub s: Vec2,
     pub v: Vec2,
@@ -14,8 +17,8 @@ pub struct State {
 
 #[derive(Clone, Debug)]
 pub enum BodyType {
-    GPoint,
-    Point,
+    Ball(f32),
+    Box(f32),
 }
 
 #[derive(Clone)]
@@ -38,10 +41,9 @@ impl Body {
     pub fn new(body_type: BodyType, m: f32) -> Self {
         Self {
             forces: match &body_type {
-                BodyType::GPoint => vec![Box::<Gravity>::default()],
+                BodyType::Ball(_) | BodyType::Box(_) => vec![Box::new(Gravity::new(K_RE, m))],
                 _ => vec![],
             },
-
             body_type,
             m,
             s: Vec2::default(),
@@ -49,36 +51,52 @@ impl Body {
         }
     }
 
-    pub fn calc(&mut self, d: f32, timestep: f32) {
-        let state = State {
-            s: self.s,
-            v: self.v,
-        };
-
-        self.update(state, d, timestep);
+    // Returns the acc
+    pub fn a<'a>(
+        &'a self,
+        v: Vec2,
+        u: Vec2,
+    ) -> (impl Fn(f32, f32) -> f32 + 'a, impl Fn(f32, f32) -> f32 + 'a) {
+        (self.a_x(), self.a_y())
     }
 
     /// Represents the F(t) where F is the forces acting on the given body.
-    pub fn sum_forces(&self) -> f32 {
-        if !self.forces.is_empty() {
+    pub fn a_x<'a>(&'a self) -> impl Fn(f32, f32) -> f32 + 'a {
+        move |v, u| {
             let mut sum: f32 = 0.0;
 
-            for force in self.forces.iter() {
-                sum += force.calc(self.s, self.v);
+            if !self.forces.is_empty() {
+                for force in self.forces.iter() {
+                    let f = force.calc_x(v, u);
+                    sum += f;
+                }
             }
 
-            sum
-        } else {
-            0.0
+            info!("Summed force in x: {}N", sum);
+            sum / self.m
         }
     }
 
-    pub fn update(&mut self, state: State, d: f32, timestep: f32) {
-        solve_rk4_and_set(self, &state, d, timestep);
+    /// Represents the F(t) where F is the forces acting on the given body.
+    pub fn a_y<'a>(&'a self) -> impl Fn(f32, f32) -> f32 + 'a {
+        move |v, u| {
+            let mut sum: f32 = 0.0;
+
+            if !self.forces.is_empty() {
+                for force in self.forces.iter() {
+                    let f = force.calc_y(v, u);
+                    sum += f;
+                }
+            }
+            info!("Summed force in y: {}N", sum);
+
+            sum / self.m
+        }
     }
 
-    pub fn accn(&self, t: f32, _u: Option<f32>) -> f32 {
-        self.sum_forces() / self.m
+    pub fn update(&mut self, state: State) {
+        self.v = state.v;
+        self.s = state.s;
     }
 
     /// Gives the velocity of the system in the x direction

@@ -1,4 +1,9 @@
+use log::{debug, info};
+use nannou::glam::Vec2;
+
 use crate::body::{Body, State};
+use crate::rk::solve_rk4;
+use std::borrow::{Borrow, BorrowMut};
 use std::cell::RefCell;
 use std::fmt::Debug;
 
@@ -6,11 +11,30 @@ use std::fmt::Debug;
 pub struct NoBodyError;
 
 pub struct Engine {
-    bodies: Vec<RefCell<Body>>,
+    pub bodies: Vec<Body>,
     pub iterations: u32,
 }
 
 impl Engine {
+    pub fn new(bodies: Vec<Body>) -> Self {
+        Self {
+            bodies,
+            iterations: 0,
+        }
+    }
+
+    pub fn add_body(&mut self, body: Body) {
+        self.bodies.push(body);
+    }
+
+    pub fn body(&self, i: usize) -> Option<&Body> {
+        self.bodies().get(i)
+    }
+
+    pub fn bodies(&self) -> &Vec<Body> {
+        &self.bodies
+    }
+
     pub fn count_bodies(&self) -> Option<usize> {
         if !self.bodies.is_empty() {
             Some(self.bodies.len())
@@ -19,48 +43,51 @@ impl Engine {
         }
     }
 
-    pub fn add_body(&mut self, body: Body) {
-        self.bodies.push(RefCell::new(body));
-    }
-
-    pub fn new(bodies: Vec<RefCell<Body>>) -> Self {
-        Self {
-            bodies,
-            iterations: 0,
-        }
-    }
-
-    pub fn bodies(&self) -> &Vec<RefCell<Body>> {
-        &self.bodies
-    }
-
-    pub fn body(&self, i: usize) -> Option<&RefCell<Body>> {
-        self.bodies().get(i)
-    }
-
-    pub fn calc(&self, del: f32, timestep: f32) -> Result<(), NoBodyError> {
-        // TODO: Implement the collision loops inside this function, not inside the body.
-        if let None = self.count_bodies() {
+    pub fn calc(&mut self, t: f32) -> Result<(), NoBodyError> {
+        if self.count_bodies().is_none() {
             return Err(NoBodyError);
         }
-        // Calculate state
-        let states: Vec<State> = Vec::new();
-        // if let Some(_a) = self.count_bodies() {
-        //     for body in self.bodies.iter() {
-        //         body.borrow_mut().calc(del, timestep);
-        //     }
 
-        //     Ok(())
-        // } else {
-        //     Err(NoBodyError)
-        // }
+        // Calculate state
+        let mut states: Vec<(usize, State)> = Vec::new();
+
+        loop {
+            // Get velocity and acceleration for each object through RK4
+            for (i, body) in self.bodies.iter().enumerate() {
+                debug!("Current body: {}, {:?}", i, body);
+                let temp_body = body.clone();
+                let (a_x, a_y) = temp_body.a(temp_body.v, temp_body.s);
+
+                let t_vx = solve_rk4(temp_body.v.x, temp_body.s.x, t, a_x);
+                let t_vy = solve_rk4(temp_body.v.x, temp_body.s.x, t, a_y);
+                info!("{}m/s, {}m/s", t_vx, t_vy);
+
+                let v = Vec2::new(temp_body.v.x + t_vx, temp_body.v.y + t_vy);
+                let s = Vec2::new(temp_body.s.x + v.x * t, temp_body.s.y + v.y * t);
+                states.push((i, State { v, s }));
+            }
+
+            // No need to advance to object collision detection if there is only one body
+            if self.count_bodies().unwrap() == 1 {
+                debug!("Only one body present in engine. Not performing collision detection.");
+                break;
+            }
+        }
+
+        info!("{:#?}", states);
+
+        // When valid state is reached, update all the bodies.
+        for state in states.iter() {
+            self.bodies[0].v = state.1.v;
+            self.bodies[0].s = state.1.s;
+        }
+
         Ok(())
     }
 
-    pub fn update_mass(&self, m: f32, i: usize) -> Result<(), NoBodyError> {
+    pub fn update_mass(&mut self, m: f32, i: usize) -> Result<(), NoBodyError> {
         if !self.bodies.is_empty() {
-            let mut a = self.body(i).unwrap().borrow_mut();
-            a.m = m;
+            self.bodies[i].m = m;
             Ok(())
         } else {
             Err(NoBodyError)
@@ -70,7 +97,7 @@ impl Engine {
 
 impl Default for Engine {
     fn default() -> Self {
-        Engine::new(Vec::<RefCell<Body>>::new())
+        Engine::new(Vec::<Body>::new())
     }
 }
 

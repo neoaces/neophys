@@ -1,5 +1,4 @@
 pub mod body;
-pub mod bounding;
 pub mod collision;
 pub mod constants;
 pub mod debug;
