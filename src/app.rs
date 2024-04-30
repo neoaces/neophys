@@ -5,7 +5,7 @@ use nannou_egui::{
     Egui,
 };
 use neophys::prelude::*;
-use std::cell::RefCell;
+
 
 static GROUND: f32 = 20.0;
 static CIRCLE_RES: u32 = 8;
