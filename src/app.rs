@@ -8,7 +8,6 @@ use neophys::prelude::*;
 use std::cell::RefCell;
 
 static GROUND: f32 = 20.0;
-static TIMESTEP_OFFSET: f32 = 0.2;
 static CIRCLE_RES: u32 = 8;
 
 fn main() {
@@ -19,7 +18,6 @@ struct Settings {
     resolution: u32,
     scale: f32,
     color: Srgb<u8>,
-    time: f32,
     bounding_box: bool,
 }
 
@@ -55,7 +53,6 @@ fn model(app: &App) -> Model {
             resolution: CIRCLE_RES,
             scale: 25.0,
             color: RED,
-            time: 60.0,
             bounding_box: true,
         },
         pos: Vec2::default(),
