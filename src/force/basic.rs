@@ -1,6 +1,7 @@
 use super::Force;
 use nannou::glam::Vec2;
 
+#[allow(dead_code)]
 #[derive(Clone)]
 pub struct Applied {
     pub mag_x: f32,
@@ -13,11 +14,11 @@ impl Force for Applied {
         Vec2::new(self.mag_x, self.mag_y)
     }
 
-    fn calc_x(&self, x: f32, u: f32) -> f32 {
+    fn calc_x(&self, _x: f32, _u: f32) -> f32 {
         self.mag_x
     }
 
-    fn calc_y(&self, y: f32, u: f32) -> f32 {
+    fn calc_y(&self, _y: f32, _u: f32) -> f32 {
         self.mag_y
     }
 

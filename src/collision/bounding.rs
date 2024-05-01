@@ -1,5 +1,5 @@
 use log::debug;
-use nannou::{geom::Rect, glam::Vec2};
+use nannou::geom::Rect;
 
 pub struct BoundingBox {
     pub top: f32,

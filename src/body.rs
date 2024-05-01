@@ -44,7 +44,6 @@ impl Body {
         Self {
             forces: match &body_type {
                 BodyType::Ball(_) | BodyType::Box(_) => vec![Box::new(Gravity::new(K_RE, m))],
-                _ => vec![],
             },
             body_type,
             m,
@@ -54,11 +53,11 @@ impl Body {
         }
     }
 
-    // Returns the acc
+    // Returns the functions of acceleration
     pub fn a(
         &'_ self,
-        v: Vec2,
-        u: Vec2,
+        _v: Vec2,
+        _u: Vec2,
     ) -> (impl Fn(f32, f32) -> f32 + '_, impl Fn(f32, f32) -> f32 + '_) {
         (self.f_x(), self.f_y())
     }
@@ -103,12 +102,12 @@ impl Body {
     }
 
     /// Gives the velocity of the system in the x direction
-    pub fn vx(body: &Body, x: f32, u: f32) -> f32 {
+    pub fn vx(body: &Body) -> f32 {
         body.v.x
     }
 
     /// Gives the velocity of the system in the y direction
-    pub fn vy(body: &Body, x: f32, u: f32) -> f32 {
+    pub fn vy(body: &Body) -> f32 {
         body.v.y
     }
 }

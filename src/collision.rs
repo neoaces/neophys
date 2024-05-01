@@ -1,8 +1,6 @@
-use crate::{body::State, constants::PPM, utils::scale};
 pub mod bounding;
-use self::bounding::BoundingBox;
 use log::{error, info};
-use nannou::{geom::Rect, glam::Vec2};
+use nannou::geom::Rect;
 
 // type TempState = Vec<(usize, State)>;
 

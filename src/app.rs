@@ -21,6 +21,7 @@ struct Settings {
     bounding_box: bool,
 }
 
+#[allow(dead_code)]
 struct Model {
     engine: Engine,
     settings: Settings,
@@ -72,7 +73,6 @@ fn model(app: &App) -> Model {
 
 fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
-    let settings = &mut model.settings;
 
     egui.set_elapsed_time(update.since_start);
     let frame = &egui.begin_frame();
@@ -104,7 +104,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
 
     info!("Timestep {}s", model.t - old_t);
 
-    if let Err(a) = model.engine.calc(model.t - old_t) {
+    if model.engine.calc(model.t - old_t).is_err() {
         error!(
             "No bodies found in the engine. Please add a body using the engine::add_body function."
         )
