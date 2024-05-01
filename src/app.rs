@@ -4,11 +4,11 @@ use nannou_egui::{
     egui::{self},
     Egui,
 };
-use neophys::prelude::*;
-
+use neophys::{constants::PPM, prelude::*, utils::scale};
 
 static GROUND: f32 = 20.0;
 static CIRCLE_RES: u32 = 8;
+static CIRCLE_RAD: f32 = 1.0;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -51,25 +51,31 @@ fn model(app: &App) -> Model {
         egui,
         settings: Settings {
             resolution: CIRCLE_RES,
-            scale: 25.0,
+            scale: scale(CIRCLE_RAD), // In pixels
             color: RED,
             bounding_box: true,
         },
         pos: Vec2::default(),
         t: 0.0,
         m: 10.0,
-        engine: Engine::new(vec![Body::new(BodyType::Ball(25.0), 10.0)]), // Careful of hardcoded radius value. Should be with settings.scale
+        engine: Engine::new(
+            vec![Body::new(
+                BodyType::Ball(scale(CIRCLE_RAD)),
+                10.0,
+                scale(CIRCLE_RAD),
+            )],
+            window.rect(),
+        ), // Careful of hardcoded radius value. Should be with settings.scale
         ground_y: window.rect().bottom() + GROUND,
     }
 }
 
-fn update(_app: &App, model: &mut Model, update: Update) {
+fn update(app: &App, model: &mut Model, update: Update) {
     let egui = &mut model.egui;
     let settings = &mut model.settings;
 
     egui.set_elapsed_time(update.since_start);
     let frame = &egui.begin_frame();
-
     let body = &model.engine.bodies[0];
 
     egui::Window::new("Settings").show(frame, |ui| {
@@ -78,6 +84,11 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.add(egui::Slider::new(&mut model.settings.scale, 5.0..=100.0).text("Radius"));
         ui.checkbox(&mut model.settings.bounding_box, "Enable bounding boxes");
         ui.label(format!("Mass (kg): {}", body.m));
+        ui.label(format!(
+            "Dimensions of window (m): {}, {}",
+            app.window_rect().w() / PPM,
+            app.window_rect().h() / PPM,
+        ));
     });
 
     if model.engine.bodies[0].m != model.m {
@@ -86,10 +97,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     info!(
         "Current time: {}s \nTime since start: {}s",
-        model.t, _app.time
+        model.t, app.time
     );
     let old_t = model.t;
-    model.t = _app.time;
+    model.t = app.time;
 
     info!("Timestep {}s", model.t - old_t);
 
@@ -110,12 +121,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let win = app.window_rect();
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
+
     debug!("{:?}", engine);
     for body in model.engine.bodies().iter() {
         let pos = body.s;
         let x = pos.x;
-        let y = pos.y.clamp(model.ground_y + model.settings.scale, 0.0);
-        let new_pos = Vec2::new(x, y);
+        let y = pos.y.clamp(win.bottom(), 0.0);
+        let new_pos = Vec2::new(scale(x), scale(y));
 
         draw.ellipse()
             .resolution(settings.resolution as f32)

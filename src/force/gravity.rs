@@ -1,6 +1,6 @@
 use nannou::glam::Vec2;
 
-use super::{Force, K_G, K_ME, K_RE};
+use super::{Force, K_G, K_ME};
 
 #[derive(Clone)]
 pub struct Gravity {

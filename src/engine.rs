@@ -1,10 +1,11 @@
-use log::{debug, info};
+use log::{debug, error, info};
+use nannou::geom::Rect;
 use nannou::glam::Vec2;
 
 use crate::body::{Body, State};
+use crate::collision::{bounding, detect_ground_collisions};
 use crate::rk::solve_rk4;
-use std::borrow::{Borrow, BorrowMut};
-use std::cell::RefCell;
+use crate::utils::scale;
 use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
@@ -13,13 +14,15 @@ pub struct NoBodyError;
 pub struct Engine {
     pub bodies: Vec<Body>,
     pub iterations: u32,
+    pub window: Rect,
 }
 
 impl Engine {
-    pub fn new(bodies: Vec<Body>) -> Self {
+    pub fn new(bodies: Vec<Body>, window: Rect) -> Self {
         Self {
             bodies,
             iterations: 0,
+            window,
         }
     }
 
@@ -62,8 +65,19 @@ impl Engine {
                 let t_vy = solve_rk4(temp_body.v.x, temp_body.s.x, t, a_y);
                 info!("{}m/s, {}m/s", t_vx, t_vy);
 
-                let v = Vec2::new(temp_body.v.x + t_vx, temp_body.v.y + t_vy);
+                let mut v = Vec2::new(temp_body.v.x + t_vx, temp_body.v.y + t_vy);
                 let s = Vec2::new(temp_body.s.x + v.x * t, temp_body.s.y + v.y * t);
+
+                debug!("Size of body in pixels: {}px", temp_body.size * 2.0);
+                let temp_box =
+                    bounding::construct_rect(scale(s.x), scale(s.y), temp_body.size * 2.0);
+
+                if detect_ground_collisions(temp_box, self.window).is_err() {
+                    error!("Collision.");
+                    v.x *= -1.0;
+                    v.y *= -1.0;
+                }
+
                 states.push((i, State { v, s }));
             }
 
@@ -92,12 +106,6 @@ impl Engine {
         } else {
             Err(NoBodyError)
         }
-    }
-}
-
-impl Default for Engine {
-    fn default() -> Self {
-        Engine::new(Vec::<Body>::new())
     }
 }
 

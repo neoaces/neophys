@@ -1,7 +1,7 @@
-pub mod bounding;
-use crate::constants::K_RE;
-use crate::force::{gravity::Gravity, Force};
-use crate::rk::solve_rk4;
+use crate::{
+    constants::K_RE,
+    force::{gravity::Gravity, Force},
+};
 use log::info;
 use nannou::geom::Vec2;
 use std::fmt::Debug;
@@ -31,6 +31,8 @@ pub struct Body {
     pub v: Vec2,
     /// Mass of the body in kilograms
     pub m: f32,
+    /// Size of the mass
+    pub size: f32,
     /// Array of all forces on the object
     forces: Vec<Box<dyn Force>>,
 }
@@ -38,7 +40,7 @@ pub struct Body {
 impl Body {
     /// Constructor for Body
     /// * `m` - The mass of the body in kilograms
-    pub fn new(body_type: BodyType, m: f32) -> Self {
+    pub fn new(body_type: BodyType, m: f32, size: f32) -> Self {
         Self {
             forces: match &body_type {
                 BodyType::Ball(_) | BodyType::Box(_) => vec![Box::new(Gravity::new(K_RE, m))],
@@ -48,6 +50,7 @@ impl Body {
             m,
             s: Vec2::default(),
             v: Vec2::default(),
+            size,
         }
     }
 
@@ -114,6 +117,7 @@ impl Debug for Body {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Body")
             .field("BodyType", &self.body_type)
+            .field("Size (px)", &self.size)
             .field("Mass (kg)", &self.m)
             .field("Position", &self.s)
             .finish()

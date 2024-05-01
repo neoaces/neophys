@@ -1,34 +1,6 @@
 use crate::body::{Body, State};
 use log::{debug, info};
 
-// /// Implementation of the fourth order Runge Kutta method to update the position and velocity of a Body
-// /// * `body` - The body to be updated
-// /// * `init_state` - The initial state of the Body
-// /// * `t` - The initial time of the system
-// /// * `timestep` - The timestep wanted for the simulation
-// pub fn solve_rk4_and_set(body: &mut Body, init_state: &State, t: f32, timestep: f32) {
-//     // We start with the function x** = F(x, t) where F(t) represents the force
-//     debug!(
-//         "Inital conditions: {:?}, time: {}s, timestep: {}s",
-//         init_state, t, timestep
-//     );
-
-//     let x = init_state.s.x;
-//     let y = init_state.s.y;
-//     let dxdt = init_state.v.x;
-//     let dydt = init_state.v.y;
-//     let a = body.sum_forces();
-
-//     debug!("Acceleration: {}", body.sum_forces());
-
-//     body.v.y += solve_rk4(x, None, timestep, &|_: f32, _: f32| a);
-
-//     debug!("Calculated vy: {}", body.v.y);
-//     let s = body.v.y * timestep;
-//     body.s.y += s;
-//     debug!("Calculated y: {}, Sy: {}", s, body.s.y);
-// }
-
 /// Implementation of the fourth order Runge Kutta method.
 /// Returns the solution to the problem dx/dt = F(x, u) where u is held constant
 /// * `x` - The initial state of the system
