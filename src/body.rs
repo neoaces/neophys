@@ -64,7 +64,7 @@ impl Body {
     }
 
     /// Represents the F(t) where F is the forces acting on the given body.
-    pub fn f_x<'a>(&'a self) -> impl Fn(f32, f32) -> f32 + 'a {
+    pub fn f_x(&'_ self) -> impl Fn(f32, f32) -> f32 + '_ {
         move |v, u| {
             let mut sum: f32 = 0.0;
 
@@ -81,7 +81,7 @@ impl Body {
     }
 
     /// Represents the F(t) where F is the forces acting on the given body.
-    pub fn f_y<'a>(&'a self) -> impl Fn(f32, f32) -> f32 + 'a {
+    pub fn f_y(&'_ self) -> impl Fn(f32, f32) -> f32 + '_ {
         move |v, u| {
             let mut sum: f32 = 0.0;
 
