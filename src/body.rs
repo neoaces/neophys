@@ -55,11 +55,11 @@ impl Body {
     }
 
     // Returns the acc
-    pub fn a<'a>(
-        &'a self,
+    pub fn a(
+        &'_ self,
         v: Vec2,
         u: Vec2,
-    ) -> (impl Fn(f32, f32) -> f32 + 'a, impl Fn(f32, f32) -> f32 + 'a) {
+    ) -> (impl Fn(f32, f32) -> f32 + '_, impl Fn(f32, f32) -> f32 + '_) {
         (self.f_x(), self.f_y())
     }
 
