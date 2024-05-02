@@ -102,7 +102,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
     let old_t = model.t;
     model.t = app.time;
 
-    info!("Timestep {}s", model.t - old_t);
+    debug!("Timestep {}s", model.t - old_t);
 
     if model.engine.calc(model.t - old_t).is_err() {
         error!(
@@ -122,7 +122,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
 
-    debug!("{:?}", engine);
     for body in model.engine.bodies().iter() {
         let pos = body.s;
         let x = pos.x;

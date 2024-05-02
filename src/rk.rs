@@ -1,12 +1,11 @@
-use crate::body::{Body, State};
-use log::{debug, info};
+use log::debug;
 
 /// Implementation of the fourth order Runge Kutta method.
 /// Returns the solution to the problem dx/dt = F(x, u) where u is held constant
 /// * `x` - The initial state of the system
-/// * `dxdt` - The initial ROF of the system
+/// * `u` - A constant
 /// * `t` - The timestep of the system
-/// * `f` - The function f(t, u) = dx/dt
+/// * `f` - The function f(x, u) = dx/dt
 
 pub fn solve_rk4(x: f32, u: f32, t: f32, f: impl Fn(f32, f32) -> f32) -> f32 {
     let init_x = x;
@@ -18,8 +17,8 @@ pub fn solve_rk4(x: f32, u: f32, t: f32, f: impl Fn(f32, f32) -> f32) -> f32 {
     let k3 = f(init_x + t * 0.5 * k2, init_u);
     let k4 = f(init_x + t * k3, init_u);
 
-    info!(
-        "k1: {}, k2: {}, k3: {}, k4: {} solved with timestep {}s, result {}",
+    debug!(
+        "Solving Runge-Kutta, 4th Order, k1: {}, k2: {}, k3: {}, k4: {} solved with timestep {}s, result {}",
         k1,
         k2,
         k3,
