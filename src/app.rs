@@ -117,12 +117,11 @@ fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event:
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
-    let engine = &model.engine;
     let win = app.window_rect();
     let draw = app.draw();
     draw.background().color(srgba(0.0, 0.0, 0.0, 1.0));
 
-    for body in model.engine.bodies().iter() {
+    for body in model.engine.bodies.iter() {
         let pos = body.s;
         let x = pos.x;
         let y = pos.y.clamp(win.bottom(), 0.0);
